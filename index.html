@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>我的書籍資料庫</title>
+  <style>
+    :root { --gap: 14px; --pink: #ffd6e7; --pink2: #ffe6f0; --accent: #a74578; --ink: #5b2a41; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif; margin: 24px; background:#fff7fb; color:#2b2b2b; }
+    h1 { margin: 0 0 10px; color: var(--ink); }
+    a { color: var(--accent); }
+    .hidden { display: none !important; }
+    /* Bingo-like grid */
+    .board { background:#fbe3ef; padding: 18px; border-radius: 22px; border: 3px solid var(--pink); }
+    .tiles { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: var(--gap); }
+    .tile { display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px; border-radius:18px; background:#fff; border:2px solid #f3c3d6; cursor:pointer; }
+    .tile:hover { background: var(--pink2); }
+    .tile img { width: 90px; height:90px; object-fit: cover; border-radius: 12px; border: 1px solid #f0a9c9; }
+    .tile span { font-weight: 700; color: var(--ink); text-align:center; }
+    .bar { display:flex; gap:10px; align-items:center; justify-content:space-between; margin: 12px 0; flex-wrap:wrap; }
+    .btn { padding:8px 12px; border:2px solid #f3c3d6; border-radius:999px; background:#fff; cursor:pointer; }
+    .btn:hover { background:#ffeef6; }
+    .controls input, .controls select { padding:8px 10px; border:2px solid #f3c3d6; border-radius:999px; font-size:14px; background:#fff; }
+    /* Gallery (masonry-like) */
+    .grid{ column-count: 4; column-gap: var(--gap); }
+    @media (max-width: 1200px) { .grid { column-count: 3; } }
+    @media (max-width: 900px) { .grid { column-count: 2; } }
+    @media (max-width: 600px) { .grid { column-count: 1; } }
+    .card{ display:inline-block; width:100%; border:2px solid #f3c3d6; border-radius:16px; padding:12px; margin: 0 0 var(--gap); cursor:pointer; background:#fff; }
+    .title{ font-weight:800; color:#432233; }
+    .meta{ color:#6a5060; font-size:13px; }
+    .tag{ display:inline-block; border:1px solid #f0a9c9; border-radius:999px; padding:0 8px; margin:4px 6px 0 0; font-size:12px; color:#7a4d63; }
+    /* Modal */
+    .modal{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; }
+    .panel{ background:#fff; max-width:860px; width:92vw; max-height:90vh; overflow:auto; border-radius:18px; padding:18px; border:3px solid var(--pink); }
+  </style>
+</head>
+<body>
+  <h1>我的書籍資料庫</h1>
+
+  <!-- View A: Bingo-like category board -->
+  <section id="view-tiles">
+    <div class="board">
+      <div class="bar">
+        <div style="font-weight:700;color:#7a4d63;">選一個分類開始探索</div>
+        <div class="controls">
+          <input id="qA" placeholder="（可選）搜尋全部書庫" />
+          <button id="searchAll" class="btn">搜尋</button>
+        </div>
+      </div>
+      <div class="tiles">
+        
+        <button class="tile" data-cat="🎨 藝術與設計" data-slug="art-design">
+          <img src="assets/icons/art-design.png" alt="🎨 藝術與設計 icon" />
+          <span>🎨 藝術與設計</span>
+        </button>
+        
+        <button class="tile" data-cat="🔊 聲音與音樂" data-slug="sound-music">
+          <img src="assets/icons/sound-music.png" alt="🔊 聲音與音樂 icon" />
+          <span>🔊 聲音與音樂</span>
+        </button>
+        
+        <button class="tile" data-cat="🧠 心智與心理學" data-slug="mind-psych">
+          <img src="assets/icons/mind-psych.png" alt="🧠 心智與心理學 icon" />
+          <span>🧠 心智與心理學</span>
+        </button>
+        
+        <button class="tile" data-cat="🌌 哲學與科普" data-slug="philosophy-science">
+          <img src="assets/icons/philosophy-science.png" alt="🌌 哲學與科普 icon" />
+          <span>🌌 哲學與科普</span>
+        </button>
+        
+        <button class="tile" data-cat="📈 經濟與社會觀察" data-slug="economy-society">
+          <img src="assets/icons/economy-society.png" alt="📈 經濟與社會觀察 icon" />
+          <span>📈 經濟與社會觀察</span>
+        </button>
+        
+        <button class="tile" data-cat="✍️ 語言與表達" data-slug="language-expression">
+          <img src="assets/icons/language-expression.png" alt="✍️ 語言與表達 icon" />
+          <span>✍️ 語言與表達</span>
+        </button>
+        
+        <button class="tile" data-cat="🧭 自我成長與人生設計" data-slug="self-growth-design">
+          <img src="assets/icons/self-growth-design.png" alt="🧭 自我成長與人生設計 icon" />
+          <span>🧭 自我成長與人生設計</span>
+        </button>
+        
+        <button class="tile" data-cat="👁️‍🗨️ 感官與風格" data-slug="senses-style">
+          <img src="assets/icons/senses-style.png" alt="👁️‍🗨️ 感官與風格 icon" />
+          <span>👁️‍🗨️ 感官與風格</span>
+        </button>
+        
+        <button class="tile" data-cat="📚 知識與文明史" data-slug="knowledge-civilization">
+          <img src="assets/icons/knowledge-civilization.png" alt="📚 知識與文明史 icon" />
+          <span>📚 知識與文明史</span>
+        </button>
+        
+        <button class="tile" data-cat="🧰 創新與問題解決" data-slug="innovation-problem">
+          <img src="assets/icons/innovation-problem.png" alt="🧰 創新與問題解決 icon" />
+          <span>🧰 創新與問題解決</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- View B: Gallery of a single category -->
+  <section id="view-gallery" class="hidden">
+    <div class="bar">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button id="back" class="btn">← 返回分類</button>
+        <div id="pickedCat" style="font-weight:800;color:#7a4d63;"></div>
+        <div id="count" style="color:#7a4d63;"></div>
+      </div>
+      <div class="controls">
+        <select id="sort">
+          <option value="random">隨機</option>
+          <option value="title.asc">標題 A→Z</option>
+          <option value="title.desc">標題 Z→A</option>
+          <option value="year.desc">年份 新→舊</option>
+          <option value="year.asc">年份 舊→新</option>
+          <option value="rating.desc">評分 高→低</option>
+          <option value="added_at.desc">新增時間 新→舊</option>
+        </select>
+        <button id="shuffle" class="btn">Shuffle</button>
+        <input id="qB" placeholder="在此分類內搜尋" />
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <div class="modal" id="modal" onclick="if(event.target===this)this.style.display='none'">
+    <div class="panel" id="panel"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+  <script>
+    const $tiles = document.getElementById('view-tiles');
+    const $gallery = document.getElementById('view-gallery');
+    const $grid = document.getElementById('grid');
+    const $pickedCat = document.getElementById('pickedCat');
+    const $count = document.getElementById('count');
+    const $modal = document.getElementById('modal');
+    const $panel = document.getElementById('panel');
+    const $sort = document.getElementById('sort');
+    const $qA = document.getElementById('qA');
+    const $qB = document.getElementById('qB');
+    const $searchAll = document.getElementById('searchAll');
+    const $back = document.getElementById('back');
+    const $shuffle = document.getElementById('shuffle');
+
+    let books = [];
+    let fuseAll;
+    let currentCat = '';
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function bySort(list) {
+      const mode = $sort.value;
+      if (mode === 'random') return shuffle(list);
+      const [key, dir] = mode.split('.');
+      list.sort((a, b) => {
+        if (key === 'year' || key === 'rating') return (dir === 'asc' ? 1 : -1) * (((a[key] ?? 0) - (b[key] ?? 0)));
+        if (key === 'added_at') return (dir === 'asc' ? 1 : -1) * (new Date(a.added_at || 0) - new Date(b.added_at || 0));
+        const va = (a[key] ?? '').toString().toLowerCase();
+        const vb = (b[key] ?? '').toString().toLowerCase();
+        return dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+      });
+      return list;
+    }
+
+    async function load() {
+      const idx = await (await fetch('data/books_index.json')).json();
+      books = idx;
+      fuseAll = new Fuse(books, { keys: ['title','author','tags','summary'], threshold: 0.35, ignoreLocation: true });
+      bindTiles();
+      restoreFromHash();
+    }
+
+    function bindTiles() {
+      document.querySelectorAll('.tile').forEach(btn => {
+        btn.addEventListener('click', () => openCat(btn.dataset.cat));
+      });
+      $searchAll.addEventListener('click', () => {
+        const q = $qA.value.trim();
+        let list = q ? fuseAll.search(q).map(r => r.item) : books.slice();
+        $pickedCat.textContent = '搜尋結果';
+        currentCat = '';
+        showGallery(list);
+      });
+    }
+
+    function openCat(cat) {
+      currentCat = cat;
+      $pickedCat.textContent = cat;
+      const list = books.filter(b => b.category === cat);
+      showGallery(list);
+      const p = new URLSearchParams({ view: 'cat', cat: cat, sort: $sort.value });
+      history.replaceState(null, '', '#' + p.toString());
+    }
+
+    function showGallery(listSource) {
+      $tiles.classList.add('hidden');
+      $gallery.classList.remove('hidden');
+      let list = listSource.slice();
+      if ($qB.value.trim()) {
+        const fuseCat = new Fuse(list, { keys: ['title','author','tags','summary'], threshold: 0.35, ignoreLocation: true });
+        list = fuseCat.search($qB.value.trim()).map(r => r.item);
+      }
+      list = bySort(list);
+      $count.textContent = `共 ${list.length} 本`;
+      $grid.innerHTML = list.map(b => `
+        <div class="card" data-id="\${b.id}">
+          <div class="title">\${b.title}</div>
+          <div class="meta">\${b.author||''}\${b.year?' · '+b.year:''}\${b.rating?' · ★'+b.rating:''}</div>
+          <div class="meta">\${b.category||''}</div>
+          \${b.tags&&b.tags.length?`<div style='margin-top:8px'>\${b.tags.map(t=>`<span class=tag>\${t}</span>`).join('')}</div>`:''}
+        </div>`).join('');
+      $grid.querySelectorAll('.card').forEach(c => c.addEventListener('click', () => openDetail(c.dataset.id)));
+    }
+
+    async function openDetail(id){
+      try{
+        const meta = await (await fetch(\`data/books/\${id}/meta.json\`)).json();
+        const coverPath = \`data/books/\${id}/cover.jpg\`;
+        const authorImg = \`data/books/\${id}/author.jpg\`;
+        const coverTag = `<img src="\${coverPath}" alt="\${id}" style="max-width:180px;max-height:240px;object-fit:cover;border-radius:10px;margin-right:12px">`;
+        const authorTag = `<img src="\${authorImg}" alt="author" style="width:80px;height:80px;object-fit:cover;border-radius:50%;margin-right:8px">`;
+        $panel.innerHTML = \`
+          <div style="display:flex; gap:12px; align-items:flex-start;">
+            \${coverTag}
+            <div>
+              <h2 style="margin:0 0 4px">\${meta.title}</h2>
+              <div class="meta">\${meta.author||''}\${meta.year?' · '+meta.year:''}\${meta.category?' · '+meta.category:''}\${meta.rating?' · ★'+meta.rating:''}</div>
+              \${meta.isbn?`<div class="meta">ISBN：\${meta.isbn}</div>`:''}
+              \${meta.summary?`<p style="margin-top:8px">\${meta.summary}</p>`:''}
+              \${meta.tags&&meta.tags.length?`<div style='margin-top:8px'>\${meta.tags.map(t=>`<span class=tag>\${t}</span>`).join('')}</div>`:''}
+              <div style="margin-top:12px; display:flex; align-items:center;">
+                \${authorTag}
+                <div>
+                  <div style="font-weight:700">\${meta.author||''}</div>
+                  <div class="meta">\${meta.author_bio || '（尚未填寫作者介紹）'}</div>
+                </div>
+              </div>
+              <div style="margin-top:8px"><a href="data/books/\${id}/notes.md" target="_blank">筆記（notes.md）</a></div>
+            </div>
+          </div>\`;
+        $modal.style.display='flex';
+      }catch(e){
+        $panel.innerHTML = `<p>找不到此書的 meta.json（\${id}）。</p>`; $modal.style.display='flex';
+      }
+    }
+
+    function restoreFromHash(){
+      const p = new URLSearchParams(location.hash.slice(1));
+      if (p.get('view') === 'cat') { openCat(p.get('cat') || ''); }
+    }
+
+    document.getElementById('shuffle').addEventListener('click', () => { 
+      const base = currentCat ? books.filter(b => b.category === currentCat) : books.slice();
+      showGallery(base);
+    });
+    document.getElementById('qB').addEventListener('input', () => {
+      const base = currentCat ? books.filter(b => b.category === currentCat) : books.slice();
+      showGallery(base);
+    });
+    document.getElementById('sort').addEventListener('input', () => {
+      const base = currentCat ? books.filter(b => b.category === currentCat) : books.slice();
+      showGallery(base);
+    });
+    document.getElementById('back').addEventListener('click', () => {
+      $gallery.classList.add('hidden');
+      $tiles.classList.remove('hidden');
+      history.replaceState(null, '', '#');
+    });
+
+    load();
+  </script>
+</body>
+</html>
