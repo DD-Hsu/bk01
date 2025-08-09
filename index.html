@@ -11,6 +11,7 @@
     h1 { margin: 0 0 10px; color: var(--ink); }
     a { color: var(--accent); }
     .hidden { display: none !important; }
+
     /* Bingo-like grid */
     .board { background:#fbe3ef; padding: 18px; border-radius: 22px; border: 3px solid var(--pink); }
     .tiles { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: var(--gap); }
@@ -18,10 +19,13 @@
     .tile:hover { background: var(--pink2); }
     .tile img { width: 90px; height:90px; object-fit: cover; border-radius: 12px; border: 1px solid #f0a9c9; }
     .tile span { font-weight: 700; color: var(--ink); text-align:center; }
+
+    /* toolbar */
     .bar { display:flex; gap:10px; align-items:center; justify-content:space-between; margin: 12px 0; flex-wrap:wrap; }
     .btn { padding:8px 12px; border:2px solid #f3c3d6; border-radius:999px; background:#fff; cursor:pointer; }
     .btn:hover { background:#ffeef6; }
     .controls input, .controls select { padding:8px 10px; border:2px solid #f3c3d6; border-radius:999px; font-size:14px; background:#fff; }
+
     /* Gallery (masonry-like) */
     .grid{ column-count: 4; column-gap: var(--gap); }
     @media (max-width: 1200px) { .grid { column-count: 3; } }
@@ -31,6 +35,7 @@
     .title{ font-weight:800; color:#432233; }
     .meta{ color:#6a5060; font-size:13px; }
     .tag{ display:inline-block; border:1px solid #f0a9c9; border-radius:999px; padding:0 8px; margin:4px 6px 0 0; font-size:12px; color:#7a4d63; }
+
     /* Modal */
     .modal{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; }
     .panel{ background:#fff; max-width:860px; width:92vw; max-height:90vh; overflow:auto; border-radius:18px; padding:18px; border:3px solid var(--pink); }
@@ -50,54 +55,44 @@
         </div>
       </div>
       <div class="tiles">
-        
         <button class="tile" data-cat="🎨 藝術與設計" data-slug="art-design">
-          <img src="assets/icons/art-design.png" alt="🎨 藝術與設計 icon" />
+          <img src="./assets/icons/art-design.png" alt="🎨 藝術與設計 icon" />
           <span>🎨 藝術與設計</span>
         </button>
-        
         <button class="tile" data-cat="🔊 聲音與音樂" data-slug="sound-music">
-          <img src="assets/icons/sound-music.png" alt="🔊 聲音與音樂 icon" />
+          <img src="./assets/icons/sound-music.png" alt="🔊 聲音與音樂 icon" />
           <span>🔊 聲音與音樂</span>
         </button>
-        
         <button class="tile" data-cat="🧠 心智與心理學" data-slug="mind-psych">
-          <img src="assets/icons/mind-psych.png" alt="🧠 心智與心理學 icon" />
+          <img src="./assets/icons/mind-psych.png" alt="🧠 心智與心理學 icon" />
           <span>🧠 心智與心理學</span>
         </button>
-        
         <button class="tile" data-cat="🌌 哲學與科普" data-slug="philosophy-science">
-          <img src="assets/icons/philosophy-science.png" alt="🌌 哲學與科普 icon" />
+          <img src="./assets/icons/philosophy-science.png" alt="🌌 哲學與科普 icon" />
           <span>🌌 哲學與科普</span>
         </button>
-        
         <button class="tile" data-cat="📈 經濟與社會觀察" data-slug="economy-society">
-          <img src="assets/icons/economy-society.png" alt="📈 經濟與社會觀察 icon" />
+          <img src="./assets/icons/economy-society.png" alt="📈 經濟與社會觀察 icon" />
           <span>📈 經濟與社會觀察</span>
         </button>
-        
         <button class="tile" data-cat="✍️ 語言與表達" data-slug="language-expression">
-          <img src="assets/icons/language-expression.png" alt="✍️ 語言與表達 icon" />
+          <img src="./assets/icons/language-expression.png" alt="✍️ 語言與表達 icon" />
           <span>✍️ 語言與表達</span>
         </button>
-        
         <button class="tile" data-cat="🧭 自我成長與人生設計" data-slug="self-growth-design">
-          <img src="assets/icons/self-growth-design.png" alt="🧭 自我成長與人生設計 icon" />
+          <img src="./assets/icons/self-growth-design.png" alt="🧭 自我成長與人生設計 icon" />
           <span>🧭 自我成長與人生設計</span>
         </button>
-        
         <button class="tile" data-cat="👁️‍🗨️ 感官與風格" data-slug="senses-style">
-          <img src="assets/icons/senses-style.png" alt="👁️‍🗨️ 感官與風格 icon" />
+          <img src="./assets/icons/senses-style.png" alt="👁️‍🗨️ 感官與風格 icon" />
           <span>👁️‍🗨️ 感官與風格</span>
         </button>
-        
         <button class="tile" data-cat="📚 知識與文明史" data-slug="knowledge-civilization">
-          <img src="assets/icons/knowledge-civilization.png" alt="📚 知識與文明史 icon" />
+          <img src="./assets/icons/knowledge-civilization.png" alt="📚 知識與文明史 icon" />
           <span>📚 知識與文明史</span>
         </button>
-        
         <button class="tile" data-cat="🧰 創新與問題解決" data-slug="innovation-problem">
-          <img src="assets/icons/innovation-problem.png" alt="🧰 創新與問題解決 icon" />
+          <img src="./assets/icons/innovation-problem.png" alt="🧰 創新與問題解決 icon" />
           <span>🧰 創新與問題解決</span>
         </button>
       </div>
@@ -151,7 +146,8 @@
 
     let books = [];
     let fuseAll;
-    let currentCat = '';
+    let currentCat = ''; // 存 slug
+    let SLUG2NAME = {};  // slug -> 顯示名稱
 
     function shuffle(arr) {
       for (let i = arr.length - 1; i > 0; i--) {
@@ -176,102 +172,117 @@
     }
 
     async function load() {
-      const idx = await (await fetch('data/books_index.json')).json();
-      books = idx;
-      fuseAll = new Fuse(books, { keys: ['title','author','tags','summary'], threshold: 0.35, ignoreLocation: true });
+      // 先建立 slug->名稱 對照（從 DOM 讀）
+      SLUG2NAME = Object.fromEntries([...document.querySelectorAll('.tile')].map(btn => [btn.dataset.slug, btn.dataset.cat]));
+
+      try {
+        const res = await fetch('./data/books_index.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        books = await res.json();
+      } catch (e) {
+        alert('載入 data/books_index.json 失敗：' + e.message);
+        books = [];
+      }
+      fuseAll = books.length ? new Fuse(books, { keys:['title','author','tags','summary'], threshold:0.35, ignoreLocation:true }) : null;
+
       bindTiles();
       restoreFromHash();
     }
 
     function bindTiles() {
       document.querySelectorAll('.tile').forEach(btn => {
-        btn.addEventListener('click', () => openCat(btn.dataset.cat));
+        btn.addEventListener('click', () => openCat(btn.dataset.slug, btn.dataset.cat));
       });
       $searchAll.addEventListener('click', () => {
         const q = $qA.value.trim();
-        let list = q ? fuseAll.search(q).map(r => r.item) : books.slice();
+        const list = (q && fuseAll) ? fuseAll.search(q).map(r => r.item) : books.slice();
         $pickedCat.textContent = '搜尋結果';
         currentCat = '';
         showGallery(list);
       });
+      $qA.addEventListener('keydown', e => { if (e.key === 'Enter') $searchAll.click(); });
     }
 
-    function openCat(cat) {
-      currentCat = cat;
-      $pickedCat.textContent = cat;
-      const list = books.filter(b => b.category === cat);
+    function openCat(slug, name) {
+      currentCat = slug;
+      $pickedCat.textContent = name || (SLUG2NAME[slug] ?? slug);
+      const list = books.filter(b => b.category_slug === slug || b.category === name);
       showGallery(list);
-      const p = new URLSearchParams({ view: 'cat', cat: cat, sort: $sort.value });
+      const p = new URLSearchParams({ view: 'cat', cat: slug, sort: $sort.value });
       history.replaceState(null, '', '#' + p.toString());
     }
 
     function showGallery(listSource) {
       $tiles.classList.add('hidden');
       $gallery.classList.remove('hidden');
+
       let list = listSource.slice();
       if ($qB.value.trim()) {
         const fuseCat = new Fuse(list, { keys: ['title','author','tags','summary'], threshold: 0.35, ignoreLocation: true });
         list = fuseCat.search($qB.value.trim()).map(r => r.item);
       }
       list = bySort(list);
+
       $count.textContent = `共 ${list.length} 本`;
       $grid.innerHTML = list.map(b => `
-        <div class="card" data-id="\${b.id}">
-          <div class="title">\${b.title}</div>
-          <div class="meta">\${b.author||''}\${b.year?' · '+b.year:''}\${b.rating?' · ★'+b.rating:''}</div>
-          <div class="meta">\${b.category||''}</div>
-          \${b.tags&&b.tags.length?`<div style='margin-top:8px'>\${b.tags.map(t=>`<span class=tag>\${t}</span>`).join('')}</div>`:''}
+        <div class="card" data-id="${b.id}">
+          <div class="title">${b.title}</div>
+          <div class="meta">${b.author||''}${b.year?' · '+b.year:''}${b.rating?' · ★'+b.rating:''}</div>
+          <div class="meta">${b.category || (SLUG2NAME[b.category_slug] ?? '')}</div>
+          ${b.tags&&b.tags.length?`<div style='margin-top:8px'>${b.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
         </div>`).join('');
+
       $grid.querySelectorAll('.card').forEach(c => c.addEventListener('click', () => openDetail(c.dataset.id)));
     }
 
     async function openDetail(id){
       try{
-        const meta = await (await fetch(\`data/books/\${id}/meta.json\`)).json();
-        const coverPath = \`data/books/\${id}/cover.jpg\`;
-        const authorImg = \`data/books/\${id}/author.jpg\`;
-        const coverTag = `<img src="\${coverPath}" alt="\${id}" style="max-width:180px;max-height:240px;object-fit:cover;border-radius:10px;margin-right:12px">`;
-        const authorTag = `<img src="\${authorImg}" alt="author" style="width:80px;height:80px;object-fit:cover;border-radius:50%;margin-right:8px">`;
-        $panel.innerHTML = \`
+        const meta = await (await fetch(`./data/books/${id}/meta.json`, { cache: 'no-store' })).json();
+        const coverPath = `./data/books/${id}/cover.jpg`;
+        const authorImg = `./data/books/${id}/author.jpg`;
+        const coverTag = `<img src="${coverPath}" alt="${id}" style="max-width:180px;max-height:240px;object-fit:cover;border-radius:10px;margin-right:12px">`;
+        const authorTag = `<img src="${authorImg}" alt="author" style="width:80px;height:80px;object-fit:cover;border-radius:50%;margin-right:8px">`;
+
+        $panel.innerHTML = `
           <div style="display:flex; gap:12px; align-items:flex-start;">
-            \${coverTag}
+            ${coverTag}
             <div>
-              <h2 style="margin:0 0 4px">\${meta.title}</h2>
-              <div class="meta">\${meta.author||''}\${meta.year?' · '+meta.year:''}\${meta.category?' · '+meta.category:''}\${meta.rating?' · ★'+meta.rating:''}</div>
-              \${meta.isbn?`<div class="meta">ISBN：\${meta.isbn}</div>`:''}
-              \${meta.summary?`<p style="margin-top:8px">\${meta.summary}</p>`:''}
-              \${meta.tags&&meta.tags.length?`<div style='margin-top:8px'>\${meta.tags.map(t=>`<span class=tag>\${t}</span>`).join('')}</div>`:''}
-              <div style="margin-top:12px; display:flex; align-items:center;">
-                \${authorTag}
-                <div>
-                  <div style="font-weight:700">\${meta.author||''}</div>
-                  <div class="meta">\${meta.author_bio || '（尚未填寫作者介紹）'}</div>
-                </div>
-              </div>
-              <div style="margin-top:8px"><a href="data/books/\${id}/notes.md" target="_blank">筆記（notes.md）</a></div>
+              <h2 style="margin:0 0 4px">${meta.title}</h2>
+              <div class="meta">${meta.author||''}${meta.year?' · '+meta.year:''}${meta.category?' · '+meta.category:''}${meta.rating?' · ★'+meta.rating:''}</div>
+              ${meta.isbn?`<div class="meta">ISBN：${meta.isbn}</div>`:''}
+              ${meta.summary?`<p style="margin-top:8px">${meta.summary}</p>`:''}
+              ${meta.tags&&meta.tags.length?`<div style='margin-top:8px'>${meta.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
+
+              ${meta.table_of_contents && meta.table_of_contents.length ? `
+                <div style="margin-top:8px"><strong>目錄：</strong>
+                  <ul style="margin:6px 0 0 18px">${meta.table_of_contents.map(x=>`<li>${x}</li>`).join('')}</ul>
+                </div>` : ''}
+
+              ${meta.notes?.review ? `<div style="margin-top:8px"><strong>心得：</strong><div class="meta">${meta.notes.review}</div></div>` : '' }
+              ${meta.notes?.insights?.length ? `<div style="margin-top:8px"><strong>重點：</strong><ul style="margin:6px 0 0 18px">${meta.notes.insights.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
+              ${meta.notes?.quotes?.length ? `<div style="margin-top:8px"><strong>摘錄：</strong><ul style="margin:6px 0 0 18px">${meta.notes.quotes.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
+              ${meta.notes?.todo?.length ? `<div style="margin-top:8px"><strong>行動：</strong><ul style="margin:6px 0 0 18px">${meta.notes.todo.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
+
+              <div style="margin-top:8px"><a href="./data/books/${id}/notes.md" target="_blank">筆記（notes.md）</a></div>
             </div>
-          </div>\`;
+          </div>`;
         $modal.style.display='flex';
       }catch(e){
-        $panel.innerHTML = `<p>找不到此書的 meta.json（\${id}）。</p>`; $modal.style.display='flex';
+        $panel.innerHTML = `<p>找不到此書的 meta.json（${id}）。</p>`;
+        $modal.style.display='flex';
       }
     }
 
-    function restoreFromHash(){
-      const p = new URLSearchParams(location.hash.slice(1));
-      if (p.get('view') === 'cat') { openCat(p.get('cat') || ''); }
-    }
-
-    document.getElementById('shuffle').addEventListener('click', () => { 
-      const base = currentCat ? books.filter(b => b.category === currentCat) : books.slice();
+    document.getElementById('shuffle').addEventListener('click', () => {
+      const base = currentCat ? books.filter(b => b.category_slug === currentCat) : books.slice();
       showGallery(base);
     });
     document.getElementById('qB').addEventListener('input', () => {
-      const base = currentCat ? books.filter(b => b.category === currentCat) : books.slice();
+      const base = currentCat ? books.filter(b => b.category_slug === currentCat) : books.slice();
       showGallery(base);
     });
     document.getElementById('sort').addEventListener('input', () => {
-      const base = currentCat ? books.filter(b => b.category === currentCat) : books.slice();
+      const base = currentCat ? books.filter(b => b.category_slug === currentCat) : books.slice();
       showGallery(base);
     });
     document.getElementById('back').addEventListener('click', () => {
@@ -279,6 +290,14 @@
       $tiles.classList.remove('hidden');
       history.replaceState(null, '', '#');
     });
+
+    function restoreFromHash(){
+      const p = new URLSearchParams(location.hash.slice(1));
+      if (p.get('view') === 'cat') {
+        const slug = p.get('cat') || '';
+        openCat(slug, SLUG2NAME[slug]);
+      }
+    }
 
     load();
   </script>
