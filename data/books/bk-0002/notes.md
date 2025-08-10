@@ -1,3 +1,3 @@
-# Design of Everyday Things 筆記
+# AI 背後的暗知識  筆記
 
 （在這裡寫下你的想法與摘錄）
