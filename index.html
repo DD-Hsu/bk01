@@ -109,15 +109,11 @@
       </div>
       <div class="controls">
         <select id="sort">
-          <option value="random">隨機</option>
           <option value="title.asc">標題 A→Z</option>
           <option value="title.desc">標題 Z→A</option>
           <option value="year.desc">年份 新→舊</option>
           <option value="year.asc">年份 舊→新</option>
-          <option value="rating.desc">評分 高→低</option>
-          <option value="added_at.desc">新增時間 新→舊</option>
         </select>
-        <button id="shuffle" class="btn">Shuffle</button>
         <input id="qB" placeholder="在此分類內搜尋" />
       </div>
     </div>
@@ -142,37 +138,28 @@
     const $qB = document.getElementById('qB');
     const $searchAll = document.getElementById('searchAll');
     const $back = document.getElementById('back');
-    const $shuffle = document.getElementById('shuffle');
 
     let books = [];
     let fuseAll;
     let currentCat = ''; // 存 slug
     let SLUG2NAME = {};  // slug -> 顯示名稱
 
-    function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
     function bySort(list) {
-      const mode = $sort.value;
-      if (mode === 'random') return shuffle(list);
-      const [key, dir] = mode.split('.');
+      const [key, dir] = $sort.value.split('.');
       list.sort((a, b) => {
-        if (key === 'year' || key === 'rating') return (dir === 'asc' ? 1 : -1) * (((a[key] ?? 0) - (b[key] ?? 0)));
-        if (key === 'added_at') return (dir === 'asc' ? 1 : -1) * (new Date(a.added_at || 0) - new Date(b.added_at || 0));
-        const va = (a[key] ?? '').toString().toLowerCase();
-        const vb = (b[key] ?? '').toString().toLowerCase();
+        if (key === 'year') {
+          const av = Number.isFinite(a.year) ? a.year : -Infinity;
+          const bv = Number.isFinite(b.year) ? b.year : -Infinity;
+          return dir === 'asc' ? av - bv : bv - av;
+        }
+        const va = (a.title || '').toLowerCase();
+        const vb = (b.title || '').toLowerCase();
         return dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
       });
       return list;
     }
 
     async function load() {
-      // 先建立 slug->名稱 對照（從 DOM 讀）
       SLUG2NAME = Object.fromEntries([...document.querySelectorAll('.tile')].map(btn => [btn.dataset.slug, btn.dataset.cat]));
 
       try {
@@ -273,10 +260,6 @@
       }
     }
 
-    document.getElementById('shuffle').addEventListener('click', () => {
-      const base = currentCat ? books.filter(b => b.category_slug === currentCat) : books.slice();
-      showGallery(base);
-    });
     document.getElementById('qB').addEventListener('input', () => {
       const base = currentCat ? books.filter(b => b.category_slug === currentCat) : books.slice();
       showGallery(base);
