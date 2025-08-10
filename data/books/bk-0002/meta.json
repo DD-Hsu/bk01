@@ -1,20 +1,13 @@
 {
-  "id": "bk-0004",
-  "title": "Design of Everyday Things",
-  "author": "Don Norman",
-  "author_bio": "認知科學家、設計思想家，人本設計與可用性倡議者。",
+  "id": "bk-0002",
+  "title": "AI背後的暗知識",
+  "author": "BBB",
+  "author_bio": "",
   "year": 2013,
-  "isbn": "9780465050659",
-  "language": "en",
-  "category": "🎨 藝術與設計",
-  "tags": [
-    "UX",
-    "易用性"
-  ],
-  "status": "read",
-  "rating": 4.6,
-  "summary": "以人為中心的設計原則。",
-  "source": "紙本",
-  "added_at": "2025-08-09",
-  "updated_at": "2025-08-09"
+  "isbn": "",
+  "language": "zh-TW",
+  "category": "🧠 心智與心理學",
+  "tags": ["科技與社會", "經濟趨勢"],
+  "summary": "",
+  "source": "紙本"
 }
