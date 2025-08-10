@@ -1,7 +1,7 @@
 [
   {
     "id": "bk-0001",
-    "title": "001",
+    "title": "設計思考改變世界",
     "author": "DDD",
     "year": 2013,
     "category_slug": "art-design",
@@ -11,22 +11,22 @@
   },
   {
     "id": "bk-0002",
-    "title": "002",
+    "title": "AI背後的暗知識",
     "author": "BBB",
     "year": 2013,
     "category_slug": "mind-psych",
     "category": "🧠 心智與心理學",
-    "tags": ["UX", "易用性"],
-    "summary": "以人為中心的設計原則。"
+    "tags": ["科技與社會", "經濟趨勢"],
+    "summary": ""
   },
   {
     "id": "bk-0003",
-    "title": "003",
+    "title": "納瓦爾寶典",
     "author": "AAA",
     "year": 1943,
     "category_slug": "knowledge-civilization",
     "category": "📚 知識與文明史",
-    "tags": ["童話", "哲思"],
+    "tags": ["哲思", "財富"],
     "summary": ""
   }
 ]
