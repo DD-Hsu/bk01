@@ -39,4 +39,64 @@
     "tags": ["未來趨勢", "科學哲學", "風險管理"],
     "summary": "英國皇家天文學家馬丁·里斯提出的『三禧思維』，從長遠、全球與風險的角度思考人類未來，涵蓋科技進步、氣候變遷、全球治理等核心議題。"
   }
+  {
+    "id": "bk-0005",
+    "title": "迷戀音樂的腦",
+    "author": "Daniel J. Levitin",
+    "year": 2008,
+    "category_slug": "sound-music",
+    "category": "🔊 聲音與音樂",
+    "tags": ["音樂心理學", "認知科學"],
+    "summary": "探索音樂與人類大腦之間的關係，揭示音樂如何影響情感、記憶與思維。"
+  },
+  {
+    "id": "bk-0006",
+    "title": "橫向思考",
+    "author": "Edward de Bono",
+    "year": 1970,
+    "category_slug": "innovation-problem-solving",
+    "category": "🧰 創新與問題解決",
+    "tags": ["創意思維", "問題解決"],
+    "summary": "提出突破慣性思維的技巧，幫助讀者在日常與專業領域找到非傳統的解決方案。"
+  },
+  {
+    "id": "bk-0007",
+    "title": "知宋(上下)",
+    "author": "鄭永曦",
+    "year": 2018,
+    "category_slug": "knowledge-civilization",
+    "category": "📚 知識與文明史",
+    "tags": ["宋代歷史", "文化研究"],
+    "summary": "以深入淺出的方式，介紹宋代的政治、經濟、文化與日常生活全景。"
+  },
+  {
+    "id": "bk-0008",
+    "title": "Hygge丹麥幸福學",
+    "author": "Meik Wiking",
+    "year": 2016,
+    "category_slug": "sense-style",
+    "category": "👁️‍🗨️ 感官與風格",
+    "tags": ["生活美學", "幸福研究"],
+    "summary": "解析丹麥人獨特的生活哲學 Hygge，從居家、飲食到人際關係，探索幸福感的日常實踐。"
+  },
+  {
+    "id": "bk-0009",
+    "title": "打造第二大腦",
+    "author": "Tiago Forte",
+    "year": 2022,
+    "category_slug": "self-growth-life-design",
+    "category": "🧭 自我成長與人生設計",
+    "tags": ["知識管理", "效率提升"],
+    "summary": "教導如何建立數位知識系統，管理資訊與創意，提升生產力與決策力。"
+  },
+  {
+    "id": "bk-0010",
+    "title": "寫作，是最好的自我投資",
+    "author": "陳立飛（Spenser）",
+    "year": 2019,
+    "category_slug": "writing-expression",
+    "category": "✍️ 書寫與表達",
+    "tags": ["寫作技巧", "自我提升"],
+    "summary": "從注意力經營的角度，教授高效寫作的方法，將文字轉化為影響力與收入。"
+  }
 ]
