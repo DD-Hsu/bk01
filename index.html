@@ -3,67 +3,153 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>HSIN YUN 書籍資料庫</title>
+  <title>我的書籍資料庫</title>
   <style>
-    :root { --gap: 14px; --pink: #ffd6e7; --pink2: #ffe6f0; --accent: #a74578; --ink: #5b2a41; }
-    * { box-sizing: border-box; }
-    body { font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif; margin: 24px; background:#fff7fb; color:#2b2b2b; }
-    h1 { margin: 0 0 10px; color: var(--ink); }
-    a { color: var(--accent); }
-    .hidden { display: none !important; }
+    /* === 70s palette & typography ======================================= */
+    :root{
+      --navy:#0a1a3f;         /* 背景主色 */
+      --navy-2:#132750;       /* 次深藍（區塊用） */
+      --ivory:#f5f0e6;        /* 主要文字 */
+      --ivory-2:#e9e2d5;      /* 次文字/邊框 */
+      --accent:#d8c7a0;       /* 70s 沙金色點綴 */
+      --gap:16px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:24px;
+      background:var(--navy);
+      color:var(--ivory);
+      font-family: Georgia, "Times New Roman", Times, serif; /* 70s 氛圍 */
+      line-height:1.6;
+      letter-spacing:.2px;
+    }
+    h1,h2{
+      margin:0 0 10px;
+      color:var(--ivory);
+      font-weight:800;
+      text-transform:none;
+    }
+    h1{ font-size: clamp(28px, 4vw, 42px); }
+    a{ color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; }
+    a:hover{ border-bottom-color:var(--accent); }
 
-    /* Bingo 首頁 */
-    .board { background:#fbe3ef; padding: 18px; border-radius: 22px; border: 3px solid var(--pink); }
-    .tiles { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: var(--gap); }
-    .tile { display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px; border-radius:18px; background:#fff; border:2px solid #f3c3d6; cursor:pointer; }
-    .tile:hover { background: var(--pink2); }
-    .tile span { font-weight: 700; color: var(--ink); text-align:center; }
+    .hidden{ display:none !important; }
 
-    /* 工具列 */
-    .bar { display:flex; gap:10px; align-items:center; justify-content:space-between; margin: 12px 0; flex-wrap:wrap; }
-    .btn { padding:8px 12px; border:2px solid #f3c3d6; border-radius:999px; background:#fff; cursor:pointer; }
-    .btn:hover { background:#ffeef6; }
-    .controls input, .controls select { padding:8px 10px; border:2px solid #f3c3d6; border-radius:999px; font-size:14px; background:#fff; }
+    /* === Bingo 首頁（文字磚） ========================================== */
+    .board{
+      background:var(--navy-2);
+      padding:18px;
+      border:1px solid var(--ivory-2);
+      /* 無圓角 */
+    }
+    .tiles{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+      gap:var(--gap);
+      margin-top:10px;
+    }
+    .tile{
+      display:flex; align-items:center; justify-content:flex-start;
+      gap:12px; padding:14px 16px;
+      background:transparent;
+      color:var(--ivory);
+      border:1px solid var(--ivory-2);
+      cursor:pointer;
+      font-weight:700;
+      /* 無圓角，無陰影 */
+    }
+    .tile:hover{ background:#18305f; border-color:var(--accent); }
 
-    /* 分類畫廊（masonry-like） */
-    .grid{ column-count: 4; column-gap: var(--gap); }
-    @media (max-width: 1200px) { .grid { column-count: 3; } }
-    @media (max-width: 900px)  { .grid { column-count: 2; } }
-    @media (max-width: 600px)  { .grid { column-count: 1; } }
-    .card{ display:inline-block; width:100%; border:2px solid #f3c3d6; border-radius:16px; padding:12px; margin: 0 0 var(--gap); cursor:pointer; background:#fff; }
-    .title{ font-weight:800; color:#432233; }
-    .meta{ color:#6a5060; font-size:13px; }
-    .tag{ display:inline-block; border:1px solid #f0a9c9; border-radius:999px; padding:0 8px; margin:4px 6px 0 0; font-size:12px; color:#7a4d63; }
+    /* === 工具列（搜尋/排序/返回） ===================================== */
+    .bar{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      margin: 12px 0; flex-wrap:wrap;
+    }
+    .btn{
+      padding:8px 12px;
+      border:1px solid var(--ivory-2);
+      background:transparent;
+      color:var(--ivory);
+      cursor:pointer;
+      font-weight:700;
+      /* 無圓角 */
+    }
+    .btn:hover{ border-color:var(--accent); color:var(--accent); }
+    .controls input, .controls select{
+      padding:8px 10px;
+      border:1px solid var(--ivory-2);
+      background:var(--navy);
+      color:var(--ivory);
+      font-size:14px;
+      /* 無圓角 */
+      outline:none;
+    }
+    .controls input::placeholder{ color:#bfb8aa; }
 
-    /* Modal */
-    .modal{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; }
-    .panel{ background:#fff; max-width:860px; width:92vw; max-height:90vh; overflow:auto; border-radius:18px; padding:18px; border:3px solid var(--pink); }
+    /* === 分類畫廊（masonry-like） ==================================== */
+    .grid{ column-count: 3; column-gap: var(--gap); }
+    @media (max-width: 1100px){ .grid{ column-count:2; } }
+    @media (max-width: 700px){ .grid{ column-count:1; } }
+
+    .card{
+      display:inline-block; width:100%;
+      border:1px solid var(--ivory-2);
+      background:transparent;
+      padding:14px;
+      margin:0 0 var(--gap);
+      cursor:pointer;
+      transition: background .15s ease, border-color .15s ease;
+      /* 無圓角 */
+    }
+    .card:hover{ background:#152c59; border-color:var(--accent); }
+    .title{ font-weight:900; color:var(--ivory); }
+    .meta{ color:var(--ivory-2); font-size:13px; }
+    .tag{
+      display:inline-block;
+      border:1px solid var(--ivory-2);
+      padding:2px 8px;
+      margin:6px 6px 0 0;
+      font-size:12px; color:var(--ivory);
+      /* 無圓角 */
+    }
+
+    /* === Modal 詳情（純文字） ======================================== */
+    .modal{ position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; }
+    .panel{
+      background:var(--navy);
+      border:1px solid var(--ivory-2);
+      width:min(92vw, 860px);
+      max-height:90vh; overflow:auto;
+      padding:18px;
+      /* 無圓角 */
+    }
   </style>
 </head>
 <body>
-  <h1>HSIN YUN 書庫清單</h1>
+  <h1>我的書籍資料庫</h1>
 
   <!-- A. Bingo 分類首頁 -->
   <section id="view-tiles">
     <div class="board">
       <div class="bar">
-        <div style="font-weight:700;color:#7a4d63;">選一個分類開始探索</div>
+        <div style="font-weight:800;color:var(--accent);">選一個分類開始探索</div>
         <div class="controls">
           <input id="qA" placeholder="（可選）搜尋全部書庫" />
           <button id="searchAll" class="btn">搜尋</button>
         </div>
       </div>
       <div class="tiles">
-        <button class="tile" data-cat="🎨 藝術與設計" data-slug="art-design"><span>🎨 藝術與設計</span></button>
-        <button class="tile" data-cat="🔊 聲音與音樂" data-slug="sound-music"><span>🔊 聲音與音樂</span></button>
-        <button class="tile" data-cat="🧠 心智與心理學" data-slug="mind-psych"><span>🧠 心智與心理學</span></button>
-        <button class="tile" data-cat="🌌 哲學與科普" data-slug="philosophy-science"><span>🌌 哲學與科普</span></button>
-        <button class="tile" data-cat="📈 經濟與社會觀察" data-slug="economy-society"><span>📈 經濟與社會觀察</span></button>
-        <button class="tile" data-cat="✍️ 語言與表達" data-slug="language-expression"><span>✍️ 語言與表達</span></button>
-        <button class="tile" data-cat="🧭 自我成長與人生設計" data-slug="self-growth-design"><span>🧭 自我成長與人生設計</span></button>
-        <button class="tile" data-cat="👁️‍🗨️ 感官與風格" data-slug="senses-style"><span>👁️‍🗨️ 感官與風格</span></button>
-        <button class="tile" data-cat="📚 知識與文明史" data-slug="knowledge-civilization"><span>📚 知識與文明史</span></button>
-        <button class="tile" data-cat="🧰 創新與問題解決" data-slug="innovation-problem"><span>🧰 創新與問題解決</span></button>
+        <button class="tile" data-cat="🎨 藝術與設計" data-slug="art-design">🎨 藝術與設計</button>
+        <button class="tile" data-cat="🔊 聲音與音樂" data-slug="sound-music">🔊 聲音與音樂</button>
+        <button class="tile" data-cat="🧠 心智與心理學" data-slug="mind-psych">🧠 心智與心理學</button>
+        <button class="tile" data-cat="🌌 哲學與科普" data-slug="philosophy-science">🌌 哲學與科普</button>
+        <button class="tile" data-cat="📈 經濟與社會觀察" data-slug="economy-society">📈 經濟與社會觀察</button>
+        <button class="tile" data-cat="✍️ 語言與表達" data-slug="language-expression">✍️ 語言與表達</button>
+        <button class="tile" data-cat="🧭 自我成長與人生設計" data-slug="self-growth-design">🧭 自我成長與人生設計</button>
+        <button class="tile" data-cat="👁️‍🗨️ 感官與風格" data-slug="senses-style">👁️‍🗨️ 感官與風格</button>
+        <button class="tile" data-cat="📚 知識與文明史" data-slug="knowledge-civilization">📚 知識與文明史</button>
+        <button class="tile" data-cat="🧰 創新與問題解決" data-slug="innovation-problem">🧰 創新與問題解決</button>
       </div>
     </div>
   </section>
@@ -73,11 +159,11 @@
     <div class="bar">
       <div style="display:flex;gap:8px;align-items:center;">
         <button id="back" class="btn">← 返回分類</button>
-        <div id="pickedCat" style="font-weight:800;color:#7a4d63;"></div>
-        <div id="count" style="color:#7a4d63;"></div>
+        <div id="pickedCat" style="font-weight:800;color:var(--accent);"></div>
+        <div id="count" style="color:var(--ivory-2);"></div>
       </div>
-      <div class="controls">
-        <select id="sort">
+      <div class="controls" style="display:flex; gap:8px;">
+        <select id="sort" title="排序">
           <option value="title.asc">標題 A→Z</option>
           <option value="title.desc">標題 Z→A</option>
           <option value="year.desc">年份 新→舊</option>
@@ -89,7 +175,7 @@
     <div class="grid" id="grid"></div>
   </section>
 
-  <!-- 詳情 Modal（文字版，無圖片） -->
+  <!-- 詳情 Modal（無圖片） -->
   <div class="modal" id="modal" onclick="if(event.target===this)this.style.display='none'">
     <div class="panel" id="panel"></div>
   </div>
@@ -130,7 +216,7 @@
     }
 
     async function load() {
-      // 建立 slug->名稱 對照（從 DOM 讀）
+      // 建立 slug->名稱 對照
       SLUG2NAME = Object.fromEntries([...document.querySelectorAll('.tile')].map(btn => [btn.dataset.slug, btn.dataset.cat]));
 
       try {
@@ -199,23 +285,23 @@
         // 純文字詳情（不顯示圖片）
         $panel.innerHTML = `
           <div>
-            <h2 style="margin:0 0 4px">${meta.title||''}</h2>
+            <h2 style="margin:0 0 6px">${meta.title||''}</h2>
             <div class="meta">${meta.author||''}${meta.year?' · '+meta.year:''}${meta.category?' · '+meta.category:''}</div>
             ${meta.isbn?`<div class="meta">ISBN：${meta.isbn}</div>`:''}
-            ${meta.summary?`<p style="margin-top:8px">${meta.summary}</p>`:''}
+            ${meta.summary?`<p style="margin-top:8px;color:var(--ivory)">${meta.summary}</p>`:''}
             ${Array.isArray(meta.tags)&&meta.tags.length?`<div style='margin-top:8px'>${meta.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
 
             ${meta.table_of_contents && meta.table_of_contents.length ? `
-              <div style="margin-top:8px"><strong>目錄：</strong>
+              <div style="margin-top:10px"><strong style="color:var(--accent)">目錄：</strong>
                 <ul style="margin:6px 0 0 18px">${meta.table_of_contents.map(x=>`<li>${x}</li>`).join('')}</ul>
               </div>` : ''}
 
-            ${meta.notes?.review ? `<div style="margin-top:8px"><strong>心得：</strong><div class="meta">${meta.notes.review}</div></div>` : '' }
-            ${meta.notes?.insights?.length ? `<div style="margin-top:8px"><strong>重點：</strong><ul style="margin:6px 0 0 18px">${meta.notes.insights.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
-            ${meta.notes?.quotes?.length ? `<div style="margin-top:8px"><strong>摘錄：</strong><ul style="margin:6px 0 0 18px">${meta.notes.quotes.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
-            ${meta.notes?.todo?.length ? `<div style="margin-top:8px"><strong>行動：</strong><ul style="margin:6px 0 0 18px">${meta.notes.todo.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
+            ${meta.notes?.review ? `<div style="margin-top:10px"><strong style="color:var(--accent)">心得：</strong><div class="meta" style="color:var(--ivory)">${meta.notes.review}</div></div>` : '' }
+            ${meta.notes?.insights?.length ? `<div style="margin-top:10px"><strong style="color:var(--accent)">重點：</strong><ul style="margin:6px 0 0 18px">${meta.notes.insights.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
+            ${meta.notes?.quotes?.length ? `<div style="margin-top:10px"><strong style="color:var(--accent)">摘錄：</strong><ul style="margin:6px 0 0 18px">${meta.notes.quotes.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
+            ${meta.notes?.todo?.length ? `<div style="margin-top:10px"><strong style="color:var(--accent)">行動：</strong><ul style="margin:6px 0 0 18px">${meta.notes.todo.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
 
-            <div style="margin-top:8px"><a href="./data/books/${id}/notes.md" target="_blank">筆記（notes.md）</a></div>
+            <div style="margin-top:10px"><a href="./data/books/${id}/notes.md" target="_blank">筆記（notes.md）</a></div>
           </div>`;
         $modal.style.display='flex';
       }catch(e){
