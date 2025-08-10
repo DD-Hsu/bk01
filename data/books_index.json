@@ -1,38 +1,38 @@
 [
   {
-    "id": "bk-0004",
-    "title": "Design of Everyday Things",
-    "author": "Don Norman",
-    "year": 2013,
-    "category": "🎨 藝術與設計",
-    "tags": [
-      "UX",
-      "易用性"
-    ],
-    "rating": 4.6,
-    "status": "read",
-    "added_at": "2025-08-09",
-    "summary": "以人為中心的設計原則。"
-  },
-  {
-    "id": "bk-0004",
-    "title": "Design of Everyday Things",
-    "author": "Don Norman",
-    "year": 2013,
-    "category": "🎨 藝術與設計",
-    "tags": [
-      "UX",
-      "易用性"
-    ],
-    "rating": 4.6,
-    "status": "read",
-    "added_at": "2025-08-09",
-    "summary": "以人為中心的設計原則。"
-  },
-  {
     "id": "bk-0001",
-    "title": "小王子",
-    "author": "Antoine de Saint-Exupéry",
+    "title": "001",
+    "author": "DDD",
+    "year": 2013,
+    "category": "🎨 藝術與設計",
+    "tags": [
+      "UX",
+      "易用性"
+    ],
+    "rating": 4.6,
+    "status": "read",
+    "added_at": "2025-08-09",
+    "summary": "以人為中心的設計原則。"
+  },
+  {
+    "id": "bk-0002",
+    "title": "002",
+    "author": "BBB",
+    "year": 2013,
+    "category": "🧠 心智與心理學",
+    "tags": [
+      "UX",
+      "易用性"
+    ],
+    "rating": 4.6,
+    "status": "read",
+    "added_at": "2025-08-09",
+    "summary": "以人為中心的設計原則。"
+  },
+  {
+    "id": "bk-0003",
+    "title": "003",
+    "author": "AAA",
     "year": 1943,
     "category": "📚 知識與文明史",
     "tags": [
