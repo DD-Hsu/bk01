@@ -11,11 +11,11 @@
       --cover-border:#cfc7bb;
       --cover-accent:#fe7f2d;     /* 橘色點綴 */
 
-      --list-bg:#233d4d;          /* 分類頁維持深藍 */
+      --list-bg:#233d4d;          /* 分類頁維持深藍（預設；但我們會用 data- 屬性覆寫） */
       --list-fg:#f2eee8;
       --list-border:#cfc7bb;
 
-      --card-accent:#fe7f2d;      /* 分類清單卡片 hover */
+      --card-accent:#fe7f2d;      /* 卡片 hover */
       --gap:16px;
     }
     *{ box-sizing:border-box; }
@@ -73,7 +73,7 @@
     }
     .tile:hover{ background:#2a4a60; border-color:var(--cover-accent); color:var(--cover-accent); }
 
-    /* 清單頁 */
+    /* 清單頁（瀑布式） */
     .grid{ column-count: 3; column-gap: var(--gap); }
     @media (max-width: 1100px){ .grid{ column-count:2; } }
     @media (max-width: 700px){ .grid{ column-count:1; } }
@@ -100,6 +100,24 @@
       max-height:90vh; overflow:auto; padding:18px;
     }
     .panel pre{ white-space:pre-wrap; word-wrap:break-word; }
+
+    /* === 覆寫：分類清單頁（書籍）改用橘色背景；首頁維持深藍 === */
+    body[data-view="gallery"][data-mode="books"]{
+      background:#fe7f2d;   /* 橘色底 */
+      color:#233d4d;        /* 字用深藍 */
+    }
+    body[data-view="gallery"][data-mode="books"] .card,
+    body[data-view="gallery"][data-mode="books"] .panel,
+    body[data-view="gallery"][data-mode="books"] .controls input,
+    body[data-view="gallery"][data-mode="books"] .controls select,
+    body[data-view="gallery"][data-mode="books"] .btn{
+      border-color:#233d4d;
+    }
+    body[data-view="gallery"][data-mode="books"] .card:hover{
+      background:#ff9a52;
+      border-color:#233d4d;
+      color:#233d4d;
+    }
   </style>
 </head>
 <body>
@@ -118,7 +136,6 @@
         </div>
       </div>
       <div class="tiles" id="tiles-books">
-        <!-- 依你的 10 類 -->
         <button class="tile" data-mode="books" data-cat="🎨 藝術與設計" data-slug="art-design">🎨 藝術與設計</button>
         <button class="tile" data-mode="books" data-cat="🔊 聲音與音樂" data-slug="sound-music">🔊 聲音與音樂</button>
         <button class="tile" data-mode="books" data-cat="🧠 心智與心理學" data-slug="mind-psych">🧠 心智與心理學</button>
@@ -132,7 +149,7 @@
       </div>
     </div>
 
-    <!-- 日誌分類（新） -->
+    <!-- 日誌分類 -->
     <div class="section-title">📝 日誌</div>
     <div class="board">
       <div class="bar">
@@ -143,7 +160,6 @@
         </div>
       </div>
       <div class="tiles" id="tiles-logs">
-        <!-- 你可自訂要幾類 -->
         <button class="tile" data-mode="logs" data-cat="靈感" data-slug="ideas">靈感</button>
         <button class="tile" data-mode="logs" data-cat="工作筆記" data-slug="work">工作筆記</button>
         <button class="tile" data-mode="logs" data-cat="閱讀摘錄" data-slug="reading">閱讀摘錄</button>
@@ -207,7 +223,7 @@
     let logs = [];
     let fuseBooks, fuseLogs;
 
-    /* 輔助：排序 */
+    /* 排序 */
     function bySort(list) {
       const [key, dir] = $sort.value.split('.');
       const sgn = dir === 'asc' ? 1 : -1;
@@ -248,7 +264,7 @@
       }catch{ books = []; }
       fuseBooks = books.length ? new Fuse(books, { keys:['title','author','tags','summary'], threshold:0.35, ignoreLocation:true }) : null;
 
-      // 讀日誌索引（新）
+      // 讀日誌索引
       try{
         const res = await fetch('./data/logs_index.json', { cache:'no-store' });
         logs = res.ok ? await res.json() : [];
@@ -311,11 +327,15 @@
       $back.addEventListener('click', ()=>{
         $gallery.classList.add('hidden');
         $tiles.classList.remove('hidden');
+        document.body.dataset.view = 'tiles';   // 還原首頁狀態
+        delete document.body.dataset.mode;
         history.replaceState(null,'','#');
       });
     }
 
     function enterGallery(){
+      document.body.dataset.view = 'gallery';   // 進入清單頁
+      document.body.dataset.mode = MODE;        // books or logs
       $tiles.classList.add('hidden');
       $gallery.classList.remove('hidden');
     }
@@ -416,6 +436,9 @@
         if (mode==='books') $searchAll.click(); else $searchLogs.click();
       }
     }
+
+    /* 首頁狀態標記（讓首頁固定深藍） */
+    document.body.dataset.view = 'tiles';
 
     load();
   </script>
