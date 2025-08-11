@@ -3,27 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title> HSIN YUN booklist (書庫) </title>
+  <title>我的書籍資料庫 + 日誌</title>
   <style>
     :root{
-      --navy:#233d4d;      /* 深藍底 */
-      --navy-2:#2a4a60;    /* 次層深藍 */
-      --ivory:#f2eee8;     /* 淺象牙字 */
-      --ivory-2:#cfc7bb;   /* 次字/邊框 */
-      --pumpkin:#fe7f2d;   /* 橘色卡片 */
-      --pumpkin-2:#ff984f; /* 橘色 hover */
+      --cover-bg:#233d4d;         /* 首頁深藍 */
+      --cover-fg:#f2eee8;
+      --cover-border:#cfc7bb;
+      --cover-accent:#fe7f2d;     /* 橘色點綴 */
+
+      --list-bg:#233d4d;          /* 分類頁維持深藍 */
+      --list-fg:#f2eee8;
+      --list-border:#cfc7bb;
+
+      --card-accent:#fe7f2d;      /* 分類清單卡片 hover */
       --gap:16px;
-      --pt2: 2pt;          /* 首頁字體加 2pt */
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
       margin:24px;
-      background:var(--navy);
-      color:var(--ivory);
       font-family: Georgia, "Times New Roman", Times, serif;
-      line-height:1.6;
-      letter-spacing:.15px;
+      line-height:1.6; letter-spacing:.15px;
+      background:var(--cover-bg); color:var(--cover-fg);
     }
     h1,h2{ margin:0 0 10px; font-weight:800; }
     h1{ font-size: clamp(28px, 4vw, 42px); }
@@ -31,13 +32,32 @@
     a:hover{ border-bottom-color:currentColor; }
     .hidden{ display:none !important; }
 
-    /* --- 首頁區（分類磚），字體整體 +2pt，無圓角 --- */
-    #view-tiles{ font-size: calc(16px + var(--pt2)); }
+    /* 區塊標題 */
+    .section-title{
+      margin:28px 0 8px;
+      font-size:20px;
+      color:var(--cover-accent);
+      font-weight:900;
+      letter-spacing:.5px;
+    }
+
+    /* 首頁板塊（分類 / 日誌） */
     .board{
       background:transparent;
       padding:18px;
-      border:1px solid var(--ivory-2);
+      border:1px solid var(--cover-border);
+      margin-bottom:16px;
     }
+    .bar{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      margin: 6px 0 12px; flex-wrap:wrap;
+    }
+    .controls input, .controls select, .btn{
+      padding:8px 10px; font-size:14px; outline:none;
+      border:1px solid var(--cover-border);
+      background:transparent; color:inherit;
+    }
+    .btn{ cursor:pointer; font-weight:800; }
     .tiles{
       display:grid;
       grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
@@ -45,125 +65,125 @@
       margin-top:10px;
     }
     .tile{
-      display:flex; align-items:center;
-      gap:12px; padding:14px 16px;
-      background:transparent;
-      color:var(--ivory);
-      border:1px solid var(--ivory-2);
-      cursor:pointer; font-weight:800;
-      /* 無圓角 */
-    }
-    .tile:hover{ background:var(--navy-2); border-color:var(--pumpkin); color:var(--pumpkin); }
-
-    /* --- 工具列（搜尋/排序/返回），無圓角 --- */
-    .bar{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      margin: 12px 0; flex-wrap:wrap;
-    }
-    .btn{
-      padding:8px 12px;
-      border:1px solid var(--ivory-2);
-      background:transparent;
-      color:var(--ivory);
+      display:flex; align-items:center; gap:12px;
+      padding:14px 16px;
+      background:transparent; color:inherit;
+      border:1px solid var(--cover-border);
       cursor:pointer; font-weight:800;
     }
-    .btn:hover{ border-color:var(--pumpkin); color:var(--pumpkin); }
-    .controls input, .controls select{
-      padding:8px 10px; font-size:14px; outline:none;
-      border:1px solid var(--ivory-2); background:transparent; color:var(--ivory);
-    }
-    .controls input::placeholder{ color:#bfb8aa; }
+    .tile:hover{ background:#2a4a60; border-color:var(--cover-accent); color:var(--cover-accent); }
 
-    /* --- 分類畫廊（masonry）背景仍深藍；卡片為橘色 --- */
+    /* 清單頁 */
     .grid{ column-count: 3; column-gap: var(--gap); }
     @media (max-width: 1100px){ .grid{ column-count:2; } }
     @media (max-width: 700px){ .grid{ column-count:1; } }
 
     .card{
       display:inline-block; width:100%;
-      border:1px solid var(--navy);
-      background:var(--pumpkin);   /* 橘色卡片底 */
-      color:var(--navy);           /* 深藍文字 */
+      border:1px solid var(--list-border); background:transparent;
       padding:14px; margin:0 0 var(--gap); cursor:pointer;
       transition: background .15s ease, border-color .15s ease, color .15s ease;
-      /* 無圓角 */
     }
-    .card:hover{ background:var(--pumpkin-2); border-color:#1b2f3c; }
+    .card:hover{ background:#2a4a60; border-color:var(--card-accent); color:var(--card-accent); }
     .title{ font-weight:900; }
     .meta{ opacity:.85; font-size:13px; }
     .tag{
       display:inline-block; padding:2px 8px; margin:6px 6px 0 0; font-size:12px;
-      border:1px solid var(--navy); color:var(--navy);
+      border:1px solid var(--list-border);
     }
 
-    /* --- 詳情 Modal（純文字），沿用深藍底/象牙字 --- */
+    /* Modal */
     .modal{ position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; }
     .panel{
-      background:var(--navy);
-      color:var(--ivory);
-      border:1px solid var(--ivory-2);
-      width:min(92vw, 860px);
+      background:inherit; color:inherit;
+      border:1px solid var(--list-border); width:min(92vw, 860px);
       max-height:90vh; overflow:auto; padding:18px;
-      /* 無圓角 */
     }
+    .panel pre{ white-space:pre-wrap; word-wrap:break-word; }
   </style>
 </head>
 <body>
   <h1>我的書籍資料庫</h1>
 
-  <!-- A. 首頁：分類 -->
+  <!-- View A：首頁（上：書籍分類，下：日誌分類） -->
   <section id="view-tiles">
+    <!-- 書籍分類 -->
+    <div class="section-title">📚 書籍分類</div>
     <div class="board">
       <div class="bar">
-        <div style="font-weight:800;color:var(--pumpkin);">選一個分類開始探索</div>
+        <div style="font-weight:800;color:var(--cover-accent)">選一個分類開始探索</div>
         <div class="controls">
           <input id="qA" placeholder="（可選）搜尋全部書庫" />
           <button id="searchAll" class="btn">搜尋</button>
         </div>
       </div>
-      <div class="tiles">
-        <button class="tile" data-cat="🎨 藝術與設計" data-slug="art-design">🎨 藝術與設計</button>
-        <button class="tile" data-cat="🔊 聲音與音樂" data-slug="sound-music">🔊 聲音與音樂</button>
-        <button class="tile" data-cat="🧠 心智與心理學" data-slug="mind-psych">🧠 心智與心理學</button>
-        <button class="tile" data-cat="🌌 哲學與科普" data-slug="philosophy-science">🌌 哲學與科普</button>
-        <button class="tile" data-cat="📈 經濟與社會觀察" data-slug="economy-society">📈 經濟與社會觀察</button>
-        <button class="tile" data-cat="✍️ 語言與表達" data-slug="language-expression">✍️ 語言與表達</button>
-        <button class="tile" data-cat="🧭 自我成長與人生設計" data-slug="self-growth-design">🧭 自我成長與人生設計</button>
-        <button class="tile" data-cat="👁️‍🗨️ 感官與風格" data-slug="senses-style">👁️‍🗨️ 感官與風格</button>
-        <button class="tile" data-cat="📚 知識與文明史" data-slug="knowledge-civilization">📚 知識與文明史</button>
-        <button class="tile" data-cat="🧰 創新與問題解決" data-slug="innovation-problem">🧰 創新與問題解決</button>
+      <div class="tiles" id="tiles-books">
+        <!-- 依你的 10 類 -->
+        <button class="tile" data-mode="books" data-cat="🎨 藝術與設計" data-slug="art-design">🎨 藝術與設計</button>
+        <button class="tile" data-mode="books" data-cat="🔊 聲音與音樂" data-slug="sound-music">🔊 聲音與音樂</button>
+        <button class="tile" data-mode="books" data-cat="🧠 心智與心理學" data-slug="mind-psych">🧠 心智與心理學</button>
+        <button class="tile" data-mode="books" data-cat="🌌 哲學與科普" data-slug="philosophy-science">🌌 哲學與科普</button>
+        <button class="tile" data-mode="books" data-cat="📈 經濟與社會觀察" data-slug="economy-society">📈 經濟與社會觀察</button>
+        <button class="tile" data-mode="books" data-cat="✍️ 語言與表達" data-slug="language-expression">✍️ 語言與表達</button>
+        <button class="tile" data-mode="books" data-cat="🧭 自我成長與人生設計" data-slug="self-growth-design">🧭 自我成長與人生設計</button>
+        <button class="tile" data-mode="books" data-cat="👁️‍🗨️ 感官與風格" data-slug="senses-style">👁️‍🗨️ 感官與風格</button>
+        <button class="tile" data-mode="books" data-cat="📚 知識與文明史" data-slug="knowledge-civilization">📚 知識與文明史</button>
+        <button class="tile" data-mode="books" data-cat="🧰 創新與問題解決" data-slug="innovation-problem">🧰 創新與問題解決</button>
+      </div>
+    </div>
+
+    <!-- 日誌分類（新） -->
+    <div class="section-title">📝 日誌</div>
+    <div class="board">
+      <div class="bar">
+        <div style="font-weight:800;color:var(--cover-accent)">選一個主題開始書寫 / 檢視</div>
+        <div class="controls">
+          <input id="qJ" placeholder="（可選）搜尋全部日誌" />
+          <button id="searchLogs" class="btn">搜尋</button>
+        </div>
+      </div>
+      <div class="tiles" id="tiles-logs">
+        <!-- 你可自訂要幾類 -->
+        <button class="tile" data-mode="logs" data-cat="靈感" data-slug="ideas">靈感</button>
+        <button class="tile" data-mode="logs" data-cat="工作筆記" data-slug="work">工作筆記</button>
+        <button class="tile" data-mode="logs" data-cat="閱讀摘錄" data-slug="reading">閱讀摘錄</button>
+        <button class="tile" data-mode="logs" data-cat="自我反思" data-slug="reflection">自我反思</button>
+        <button class="tile" data-mode="logs" data-cat="日常紀錄" data-slug="daily">日常紀錄</button>
       </div>
     </div>
   </section>
 
-  <!-- B. 分類畫廊頁（背景深藍、卡片橘） -->
+  <!-- View B：清單頁（共用：書籍 / 日誌） -->
   <section id="view-gallery" class="hidden">
     <div class="bar">
       <div style="display:flex;gap:8px;align-items:center;">
-        <button id="back" class="btn">← 返回分類</button>
-        <div id="pickedCat" style="font-weight:800;color:var(--ivory);"></div>
+        <button id="back" class="btn">← 返回首頁</button>
+        <div id="pickedCat" style="font-weight:800;"></div>
         <div id="count" class="meta"></div>
       </div>
       <div class="controls" style="display:flex; gap:8px;">
-        <select id="sort" title="排序">
+        <select id="sort">
           <option value="title.asc">標題 A→Z</option>
           <option value="title.desc">標題 Z→A</option>
           <option value="year.desc">年份 新→舊</option>
           <option value="year.asc">年份 舊→新</option>
+          <option value="date.desc">日期 新→舊（僅日誌）</option>
+          <option value="date.asc">日期 舊→新（僅日誌）</option>
         </select>
-        <input id="qB" placeholder="在此分類內搜尋" />
+        <input id="qB" placeholder="此清單內搜尋" />
       </div>
     </div>
     <div class="grid" id="grid"></div>
   </section>
 
-  <!-- 詳情 Modal（無圖片） -->
+  <!-- 詳情 Modal（書籍：meta；日誌：entry.md） -->
   <div class="modal" id="modal" onclick="if(event.target===this)this.style.display='none'">
     <div class="panel" id="panel"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
   <script>
+    /* DOM */
     const $tiles = document.getElementById('view-tiles');
     const $gallery = document.getElementById('view-gallery');
     const $grid = document.getElementById('grid');
@@ -173,147 +193,229 @@
     const $panel = document.getElementById('panel');
     const $sort = document.getElementById('sort');
     const $qA = document.getElementById('qA');
+    const $qJ = document.getElementById('qJ');
     const $qB = document.getElementById('qB');
     const $searchAll = document.getElementById('searchAll');
+    const $searchLogs = document.getElementById('searchLogs');
     const $back = document.getElementById('back');
 
-    let books = [];
-    let fuseAll;
-    let currentCat = ''; // slug
-    let SLUG2NAME = {};  // slug -> 顯示名稱
+    /* 狀態 */
+    let MODE = 'books';        // 'books' | 'logs'
+    let currentCat = '';       // slug/name
+    let SLUG2NAME = {};        // 書籍 slug -> 顯示名
+    let LOG_SLUG2NAME = {};    // 日誌 slug -> 顯示名
 
+    let books = [];
+    let logs = [];
+    let fuseBooks, fuseLogs;
+
+    /* 輔助：排序 */
     function bySort(list) {
       const [key, dir] = $sort.value.split('.');
-      list.sort((a, b) => {
-        if (key === 'year') {
+      const sgn = dir === 'asc' ? 1 : -1;
+
+      if (MODE === 'logs' && (key === 'date')) {
+        list.sort((a,b)=>{
+          const ta = a.date ? new Date(a.date).getTime() : 0;
+          const tb = b.date ? new Date(b.date).getTime() : 0;
+          return sgn * (ta - tb);
+        });
+        return list;
+      }
+
+      if (key === 'year') {
+        list.sort((a,b)=>{
           const av = Number.isFinite(a.year) ? a.year : -Infinity;
           const bv = Number.isFinite(b.year) ? b.year : -Infinity;
-          return dir === 'asc' ? av - bv : bv - av;
-        }
-        const va = (a.title || '').toLowerCase();
-        const vb = (b.title || '').toLowerCase();
-        return dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
-      });
+          return sgn * (av - bv);
+        });
+        return list;
+      }
+
+      // 預設以 title
+      list.sort((a,b)=> sgn * ((a.title||'').toLowerCase().localeCompare((b.title||'').toLowerCase())));
       return list;
     }
 
+    /* 載入資料 */
     async function load() {
-      SLUG2NAME = Object.fromEntries([...document.querySelectorAll('.tile')].map(btn => [btn.dataset.slug, btn.dataset.cat]));
+      // 書籍 slug -> 名稱
+      SLUG2NAME = Object.fromEntries([...document.querySelectorAll('#tiles-books .tile')].map(btn => [btn.dataset.slug, btn.dataset.cat]));
+      LOG_SLUG2NAME = Object.fromEntries([...document.querySelectorAll('#tiles-logs .tile')].map(btn => [btn.dataset.slug, btn.dataset.cat]));
 
-      try {
-        const res = await fetch('./data/books_index.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        books = await res.json();
-      } catch (e) {
-        alert('載入 data/books_index.json 失敗：' + e.message);
-        books = [];
-      }
-      fuseAll = books.length ? new Fuse(books, { keys:['title','author','tags','summary'], threshold:0.35, ignoreLocation:true }) : null;
+      // 讀書籍索引
+      try{
+        const res = await fetch('./data/books_index.json', { cache:'no-store' });
+        books = res.ok ? await res.json() : [];
+      }catch{ books = []; }
+      fuseBooks = books.length ? new Fuse(books, { keys:['title','author','tags','summary'], threshold:0.35, ignoreLocation:true }) : null;
+
+      // 讀日誌索引（新）
+      try{
+        const res = await fetch('./data/logs_index.json', { cache:'no-store' });
+        logs = res.ok ? await res.json() : [];
+      }catch{ logs = []; }
+      fuseLogs = logs.length ? new Fuse(logs, { keys:['title','tags','summary','content'], threshold:0.35, ignoreLocation:true }) : null;
 
       bindTiles();
+      bindSearch();
       restoreFromHash();
     }
 
-    function bindTiles() {
-      document.querySelectorAll('.tile').forEach(btn => {
-        btn.addEventListener('click', () => openCat(btn.dataset.slug, btn.dataset.cat));
+    function bindTiles(){
+      document.querySelectorAll('.tile').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const mode = btn.dataset.mode;
+          const slug = btn.dataset.slug;
+          const name = btn.dataset.cat;
+          openCategory(mode, slug, name);
+        });
       });
-      $searchAll.addEventListener('click', () => {
+    }
+
+    function bindSearch(){
+      $searchAll.addEventListener('click', ()=>{
+        MODE='books';
         const q = $qA.value.trim();
-        const list = (q && fuseAll) ? fuseAll.search(q).map(r => r.item) : books.slice();
-        openResult('搜尋結果', list);
+        const list = (q && fuseBooks) ? fuseBooks.search(q).map(r=>r.item) : books.slice();
+        enterGallery();
+        $pickedCat.textContent = '搜尋結果（書籍）';
+        showGallery(list);
+        history.replaceState(null,'','#'+new URLSearchParams({view:'search',mode:'books',q}).toString());
       });
-      $qA.addEventListener('keydown', e => { if (e.key === 'Enter') $searchAll.click(); });
+      $qA.addEventListener('keydown', e=>{ if(e.key==='Enter') $searchAll.click(); });
+
+      $searchLogs.addEventListener('click', ()=>{
+        MODE='logs';
+        const q = $qJ.value.trim();
+        const list = (q && fuseLogs) ? fuseLogs.search(q).map(r=>r.item) : logs.slice();
+        enterGallery();
+        $pickedCat.textContent = '搜尋結果（日誌）';
+        showGallery(list);
+        history.replaceState(null,'','#'+new URLSearchParams({view:'search',mode:'logs',q}).toString());
+      });
+      $qJ.addEventListener('keydown', e=>{ if(e.key==='Enter') $searchLogs.click(); });
+
+      $qB.addEventListener('input', ()=>{
+        const base = MODE==='books'
+          ? (currentCat ? books.filter(b=>b.category_slug===currentCat || b.category===SLUG2NAME[currentCat]) : books.slice())
+          : (currentCat ? logs.filter(l=>l.type===currentCat) : logs.slice());
+        showGallery(base);
+      });
+
+      $sort.addEventListener('input', ()=>{
+        const base = MODE==='books'
+          ? (currentCat ? books.filter(b=>b.category_slug===currentCat || b.category===SLUG2NAME[currentCat]) : books.slice())
+          : (currentCat ? logs.filter(l=>l.type===currentCat) : logs.slice());
+        showGallery(base);
+      });
+
+      $back.addEventListener('click', ()=>{
+        $gallery.classList.add('hidden');
+        $tiles.classList.remove('hidden');
+        history.replaceState(null,'','#');
+      });
     }
 
-    function openResult(title, list){
-      $pickedCat.textContent = title;
-      showGallery(list);
-      const p = new URLSearchParams({ view: 'cat', cat: '', sort: $sort.value });
-      history.replaceState(null, '', '#' + p.toString());
-    }
-
-    function openCat(slug, name) {
-      currentCat = slug;
-      $pickedCat.textContent = name || (SLUG2NAME[slug] ?? slug);
-      const list = books.filter(b => b.category_slug === slug || b.category === name);
-      showGallery(list);
-      const p = new URLSearchParams({ view: 'cat', cat: slug, sort: $sort.value });
-      history.replaceState(null, '', '#' + p.toString());
-    }
-
-    function showGallery(listSource) {
+    function enterGallery(){
       $tiles.classList.add('hidden');
       $gallery.classList.remove('hidden');
+    }
 
+    function openCategory(mode, slug, name){
+      MODE = mode;
+      currentCat = slug;
+      $pickedCat.textContent = (mode==='books' ? (name || SLUG2NAME[slug] || slug) : (name || LOG_SLUG2NAME[slug] || slug));
+      enterGallery();
+
+      const list = mode==='books'
+        ? books.filter(b=>b.category_slug===slug || b.category===name)
+        : logs.filter(l=>l.type===slug);
+
+      showGallery(list);
+      history.replaceState(null,'','#'+new URLSearchParams({view:'cat',mode,cat:slug,sort:$sort.value}).toString());
+    }
+
+    function showGallery(listSource){
       let list = listSource.slice();
-      if ($qB.value.trim()) {
-        const fuseCat = new Fuse(list, { keys: ['title','author','tags','summary'], threshold: 0.35, ignoreLocation: true });
-        list = fuseCat.search($qB.value.trim()).map(r => r.item);
+
+      // 內部搜尋（該清單）
+      if ($qB.value.trim()){
+        const fuse = MODE==='books'
+          ? new Fuse(list, { keys:['title','author','tags','summary'], threshold:0.35, ignoreLocation:true })
+          : new Fuse(list, { keys:['title','tags','summary','content'], threshold:0.35, ignoreLocation:true });
+        list = fuse.search($qB.value.trim()).map(r=>r.item);
       }
+
       list = bySort(list);
 
-      $count.textContent = `共 ${list.length} 本`;
-      $grid.innerHTML = list.map(b => `
-        <div class="card" data-id="${b.id}">
-          <div class="title">${b.title}</div>
-          <div class="meta">${b.author||''}${b.year?' · '+b.year:''}</div>
-          <div class="meta">${b.category || (SLUG2NAME[b.category_slug] ?? '')}</div>
-          ${b.tags&&b.tags.length?`<div style='margin-top:8px'>${b.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
-        </div>`).join('');
+      $count.textContent = `共 ${list.length} 筆`;
+      if (MODE==='books'){
+        $grid.innerHTML = list.map(b=>`
+          <div class="card" data-mode="books" data-id="${b.id}">
+            <div class="title">${b.title}</div>
+            <div class="meta">${b.author||''}${b.year?' · '+b.year:''}</div>
+            <div class="meta">${b.category || (SLUG2NAME[b.category_slug] ?? '')}</div>
+            ${b.tags&&b.tags.length?`<div style='margin-top:8px'>${b.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
+          </div>`).join('');
+      }else{
+        // 日誌
+        $grid.innerHTML = list.map(l=>`
+          <div class="card" data-mode="logs" data-id="${l.id}">
+            <div class="title">${l.title || '(未命名)'}</div>
+            <div class="meta">${l.date || ''}${l.type? ' · '+(LOG_SLUG2NAME[l.type]||l.type):''}</div>
+            ${l.tags&&l.tags.length?`<div style='margin-top:8px'>${l.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
+            ${l.summary?`<div class="meta" style="margin-top:6px">${l.summary}</div>`:''}
+          </div>`).join('');
+      }
 
-      $grid.querySelectorAll('.card').forEach(c => c.addEventListener('click', () => openDetail(c.dataset.id)));
+      $grid.querySelectorAll('.card').forEach(c=>{
+        c.addEventListener('click',()=>openDetail(c.dataset.mode, c.dataset.id));
+      });
     }
 
-    async function openDetail(id){
+    async function openDetail(mode, id){
       try{
-        const meta = await (await fetch(`./data/books/${id}/meta.json`, { cache: 'no-store' })).json();
-        $panel.innerHTML = `
-          <div>
-            <h2 style="margin:0 0 6px">${meta.title||''}</h2>
-            <div class="meta">${meta.author||''}${meta.year?' · '+meta.year:''}${meta.category?' · '+meta.category:''}</div>
-            ${meta.isbn?`<div class="meta">ISBN：${meta.isbn}</div>`:''}
-            ${meta.summary?`<p style="margin-top:8px">${meta.summary}</p>`:''}
-            ${Array.isArray(meta.tags)&&meta.tags.length?`<div style='margin-top:8px'>${meta.tags.map(t=>`<span class=tag style="border-color:var(--ivory-2);color:var(--ivory)">${t}</span>`).join('')}</div>`:''}
-
-            ${meta.table_of_contents && meta.table_of_contents.length ? `
-              <div style="margin-top:10px"><strong>目錄：</strong>
-                <ul style="margin:6px 0 0 18px">${meta.table_of_contents.map(x=>`<li>${x}</li>`).join('')}</ul>
-              </div>` : ''}
-
-            ${meta.notes?.review ? `<div style="margin-top:10px"><strong>心得：</strong><div class="meta">${meta.notes.review}</div></div>` : '' }
-            ${meta.notes?.insights?.length ? `<div style="margin-top:10px"><strong>重點：</strong><ul style="margin:6px 0 0 18px">${meta.notes.insights.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
-            ${meta.notes?.quotes?.length ? `<div style="margin-top:10px"><strong>摘錄：</strong><ul style="margin:6px 0 0 18px">${meta.notes.quotes.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
-            ${meta.notes?.todo?.length ? `<div style="margin-top:10px"><strong>行動：</strong><ul style="margin:6px 0 0 18px">${meta.notes.todo.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : '' }
-
-            <div style="margin-top:10px"><a href="./data/books/${id}/notes.md" target="_blank">筆記（notes.md）</a></div>
-          </div>`;
+        if (mode==='books'){
+          const meta = await (await fetch(`./data/books/${id}/meta.json`, { cache:'no-store' })).json();
+          $panel.innerHTML = `
+            <div>
+              <h2 style="margin:0 0 6px">${meta.title||''}</h2>
+              <div class="meta">${meta.author||''}${meta.year?' · '+meta.year:''}${meta.category?' · '+meta.category:''}</div>
+              ${meta.isbn?`<div class="meta">ISBN：${meta.isbn}</div>`:''}
+              ${meta.summary?`<p style="margin-top:8px">${meta.summary}</p>`:''}
+              ${Array.isArray(meta.tags)&&meta.tags.length?`<div style='margin-top:8px'>${meta.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
+              <div style="margin-top:10px"><a href="./data/books/${id}/notes.md" target="_blank">筆記（notes.md）</a></div>
+            </div>`;
+        }else{
+          // 日誌詳情：讀 entry.md
+          const md = await (await fetch(`./data/logs/${id}/entry.md`, { cache:'no-store' })).text();
+          const item = logs.find(x=>x.id===id) || {};
+          $panel.innerHTML = `
+            <div>
+              <h2 style="margin:0 0 6px">${item.title || '(未命名)'}</h2>
+              <div class="meta">${item.date || ''}${item.type? ' · '+(LOG_SLUG2NAME[item.type]||item.type):''}</div>
+              ${item.tags&&item.tags.length?`<div style='margin-top:8px'>${item.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
+              ${item.summary?`<p style="margin-top:8px">${item.summary}</p>`:''}
+              <hr style="border:none;border-top:1px solid ${getComputedStyle(document.body).getPropertyValue('--list-border')};margin:12px 0">
+              <pre>${md.replace(/[&<>]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]))}</pre>
+            </div>`;
+        }
         $modal.style.display='flex';
       }catch(e){
-        $panel.innerHTML = `<p>找不到此書的 meta.json（${id}）。</p>`;
+        $panel.innerHTML = `<p>載入內容失敗（${id}）。</p>`;
         $modal.style.display='flex';
       }
     }
-
-    document.getElementById('qB').addEventListener('input', () => {
-      const base = currentCat ? books.filter(b => b.category_slug === currentCat) : books.slice();
-      showGallery(base);
-    });
-    document.getElementById('sort').addEventListener('input', () => {
-      const base = currentCat ? books.filter(b => b.category_slug === currentCat) : books.slice();
-      showGallery(base);
-    });
-    document.getElementById('back').addEventListener('click', () => {
-      $gallery.classList.add('hidden');
-      $tiles.classList.remove('hidden');
-      history.replaceState(null, '', '#');
-    });
 
     function restoreFromHash(){
       const p = new URLSearchParams(location.hash.slice(1));
-      if (p.get('view') === 'cat') {
-        const slug = p.get('cat') || '';
-        openCat(slug, SLUG2NAME[slug]);
+      const view = p.get('view');
+      if (view === 'cat'){
+        openCategory(p.get('mode')||'books', p.get('cat')||'', null);
+      }else if (view === 'search'){
+        const mode = p.get('mode')||'books';
+        if (mode==='books') $searchAll.click(); else $searchLogs.click();
       }
     }
 
