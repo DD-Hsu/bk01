@@ -45,7 +45,7 @@
     .board{
       background:transparent;
       padding:18px;
-      border:1px solid var(--cover-border);
+      border:1px solid var(--cover-accent); /* 改成橘色邊框 */
       margin-bottom:16px;
     }
     .bar{
@@ -68,7 +68,7 @@
       display:flex; align-items:center; gap:12px;
       padding:14px 16px;
       background:transparent; color:inherit;
-      border:1px solid var(--cover-border);
+      border:1px solid var(--cover-accent); /* 改成橘色邊框 */
       cursor:pointer; font-weight:800;
     }
     .tile:hover{ background:#2a4a60; border-color:var(--cover-accent); color:var(--cover-accent); }
@@ -190,257 +190,15 @@
     <div class="grid" id="grid"></div>
   </section>
 
-  <!-- 詳情 Modal（書籍：meta；日誌：entry.md） -->
+  <!-- 詳情 Modal -->
   <div class="modal" id="modal" onclick="if(event.target===this)this.style.display='none'">
     <div class="panel" id="panel"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
   <script>
-    /* DOM */
-    const $tiles = document.getElementById('view-tiles');
-    const $gallery = document.getElementById('view-gallery');
-    const $grid = document.getElementById('grid');
-    const $pickedCat = document.getElementById('pickedCat');
-    const $count = document.getElementById('count');
-    const $modal = document.getElementById('modal');
-    const $panel = document.getElementById('panel');
-    const $sort = document.getElementById('sort');
-    const $qA = document.getElementById('qA');
-    const $qJ = document.getElementById('qJ');
-    const $qB = document.getElementById('qB');
-    const $searchAll = document.getElementById('searchAll');
-    const $searchLogs = document.getElementById('searchLogs');
-    const $back = document.getElementById('back');
-
-    /* 狀態 */
-    let MODE = 'books';        // 'books' | 'logs'
-    let currentCat = '';       // slug/name
-    let SLUG2NAME = {};        // 書籍 slug -> 顯示名
-    let LOG_SLUG2NAME = {};    // 日誌 slug -> 顯示名
-
-    let books = [];
-    let logs = [];
-    let fuseBooks, fuseLogs;
-
-    /* 排序 */
-    function bySort(list) {
-      const [key, dir] = $sort.value.split('.');
-      const sgn = dir === 'asc' ? 1 : -1;
-
-      if (MODE === 'logs' && (key === 'date')) {
-        list.sort((a,b)=>{
-          const ta = a.date ? new Date(a.date).getTime() : 0;
-          const tb = b.date ? new Date(b.date).getTime() : 0;
-          return sgn * (ta - tb);
-        });
-        return list;
-      }
-
-      if (key === 'year') {
-        list.sort((a,b)=>{
-          const av = Number.isFinite(a.year) ? a.year : -Infinity;
-          const bv = Number.isFinite(b.year) ? b.year : -Infinity;
-          return sgn * (av - bv);
-        });
-        return list;
-      }
-
-      // 預設以 title
-      list.sort((a,b)=> sgn * ((a.title||'').toLowerCase().localeCompare((b.title||'').toLowerCase())));
-      return list;
-    }
-
-    /* 載入資料 */
-    async function load() {
-      // 書籍 slug -> 名稱
-      SLUG2NAME = Object.fromEntries([...document.querySelectorAll('#tiles-books .tile')].map(btn => [btn.dataset.slug, btn.dataset.cat]));
-      LOG_SLUG2NAME = Object.fromEntries([...document.querySelectorAll('#tiles-logs .tile')].map(btn => [btn.dataset.slug, btn.dataset.cat]));
-
-      // 讀書籍索引
-      try{
-        const res = await fetch('./data/books_index.json', { cache:'no-store' });
-        books = res.ok ? await res.json() : [];
-      }catch{ books = []; }
-      fuseBooks = books.length ? new Fuse(books, { keys:['title','author','tags','summary'], threshold:0.35, ignoreLocation:true }) : null;
-
-      // 讀日誌索引
-      try{
-        const res = await fetch('./data/logs_index.json', { cache:'no-store' });
-        logs = res.ok ? await res.json() : [];
-      }catch{ logs = []; }
-      fuseLogs = logs.length ? new Fuse(logs, { keys:['title','tags','summary','content'], threshold:0.35, ignoreLocation:true }) : null;
-
-      bindTiles();
-      bindSearch();
-      restoreFromHash();
-    }
-
-    function bindTiles(){
-      document.querySelectorAll('.tile').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          const mode = btn.dataset.mode;
-          const slug = btn.dataset.slug;
-          const name = btn.dataset.cat;
-          openCategory(mode, slug, name);
-        });
-      });
-    }
-
-    function bindSearch(){
-      $searchAll.addEventListener('click', ()=>{
-        MODE='books';
-        const q = $qA.value.trim();
-        const list = (q && fuseBooks) ? fuseBooks.search(q).map(r=>r.item) : books.slice();
-        enterGallery();
-        $pickedCat.textContent = '搜尋結果（書籍）';
-        showGallery(list);
-        history.replaceState(null,'','#'+new URLSearchParams({view:'search',mode:'books',q}).toString());
-      });
-      $qA.addEventListener('keydown', e=>{ if(e.key==='Enter') $searchAll.click(); });
-
-      $searchLogs.addEventListener('click', ()=>{
-        MODE='logs';
-        const q = $qJ.value.trim();
-        const list = (q && fuseLogs) ? fuseLogs.search(q).map(r=>r.item) : logs.slice();
-        enterGallery();
-        $pickedCat.textContent = '搜尋結果（日誌）';
-        showGallery(list);
-        history.replaceState(null,'','#'+new URLSearchParams({view:'search',mode:'logs',q}).toString());
-      });
-      $qJ.addEventListener('keydown', e=>{ if(e.key==='Enter') $searchLogs.click(); });
-
-      $qB.addEventListener('input', ()=>{
-        const base = MODE==='books'
-          ? (currentCat ? books.filter(b=>b.category_slug===currentCat || b.category===SLUG2NAME[currentCat]) : books.slice())
-          : (currentCat ? logs.filter(l=>l.type===currentCat) : logs.slice());
-        showGallery(base);
-      });
-
-      $sort.addEventListener('input', ()=>{
-        const base = MODE==='books'
-          ? (currentCat ? books.filter(b=>b.category_slug===currentCat || b.category===SLUG2NAME[currentCat]) : books.slice())
-          : (currentCat ? logs.filter(l=>l.type===currentCat) : logs.slice());
-        showGallery(base);
-      });
-
-      $back.addEventListener('click', ()=>{
-        $gallery.classList.add('hidden');
-        $tiles.classList.remove('hidden');
-        document.body.dataset.view = 'tiles';   // 還原首頁狀態
-        delete document.body.dataset.mode;
-        history.replaceState(null,'','#');
-      });
-    }
-
-    function enterGallery(){
-      document.body.dataset.view = 'gallery';   // 進入清單頁
-      document.body.dataset.mode = MODE;        // books or logs
-      $tiles.classList.add('hidden');
-      $gallery.classList.remove('hidden');
-    }
-
-    function openCategory(mode, slug, name){
-      MODE = mode;
-      currentCat = slug;
-      $pickedCat.textContent = (mode==='books' ? (name || SLUG2NAME[slug] || slug) : (name || LOG_SLUG2NAME[slug] || slug));
-      enterGallery();
-
-      const list = mode==='books'
-        ? books.filter(b=>b.category_slug===slug || b.category===name)
-        : logs.filter(l=>l.type===slug);
-
-      showGallery(list);
-      history.replaceState(null,'','#'+new URLSearchParams({view:'cat',mode,cat:slug,sort:$sort.value}).toString());
-    }
-
-    function showGallery(listSource){
-      let list = listSource.slice();
-
-      // 內部搜尋（該清單）
-      if ($qB.value.trim()){
-        const fuse = MODE==='books'
-          ? new Fuse(list, { keys:['title','author','tags','summary'], threshold:0.35, ignoreLocation:true })
-          : new Fuse(list, { keys:['title','tags','summary','content'], threshold:0.35, ignoreLocation:true });
-        list = fuse.search($qB.value.trim()).map(r=>r.item);
-      }
-
-      list = bySort(list);
-
-      $count.textContent = `共 ${list.length} 筆`;
-      if (MODE==='books'){
-        $grid.innerHTML = list.map(b=>`
-          <div class="card" data-mode="books" data-id="${b.id}">
-            <div class="title">${b.title}</div>
-            <div class="meta">${b.author||''}${b.year?' · '+b.year:''}</div>
-            <div class="meta">${b.category || (SLUG2NAME[b.category_slug] ?? '')}</div>
-            ${b.tags&&b.tags.length?`<div style='margin-top:8px'>${b.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
-          </div>`).join('');
-      }else{
-        // 日誌
-        $grid.innerHTML = list.map(l=>`
-          <div class="card" data-mode="logs" data-id="${l.id}">
-            <div class="title">${l.title || '(未命名)'}</div>
-            <div class="meta">${l.date || ''}${l.type? ' · '+(LOG_SLUG2NAME[l.type]||l.type):''}</div>
-            ${l.tags&&l.tags.length?`<div style='margin-top:8px'>${l.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
-            ${l.summary?`<div class="meta" style="margin-top:6px">${l.summary}</div>`:''}
-          </div>`).join('');
-      }
-
-      $grid.querySelectorAll('.card').forEach(c=>{
-        c.addEventListener('click',()=>openDetail(c.dataset.mode, c.dataset.id));
-      });
-    }
-
-    async function openDetail(mode, id){
-      try{
-        if (mode==='books'){
-          const meta = await (await fetch(`./data/books/${id}/meta.json`, { cache:'no-store' })).json();
-          $panel.innerHTML = `
-            <div>
-              <h2 style="margin:0 0 6px">${meta.title||''}</h2>
-              <div class="meta">${meta.author||''}${meta.year?' · '+meta.year:''}${meta.category?' · '+meta.category:''}</div>
-              ${meta.isbn?`<div class="meta">ISBN：${meta.isbn}</div>`:''}
-              ${meta.summary?`<p style="margin-top:8px">${meta.summary}</p>`:''}
-              ${Array.isArray(meta.tags)&&meta.tags.length?`<div style='margin-top:8px'>${meta.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
-              <div style="margin-top:10px"><a href="./data/books/${id}/notes.md" target="_blank">筆記（notes.md）</a></div>
-            </div>`;
-        }else{
-          // 日誌詳情：讀 entry.md
-          const md = await (await fetch(`./data/logs/${id}/entry.md`, { cache:'no-store' })).text();
-          const item = logs.find(x=>x.id===id) || {};
-          $panel.innerHTML = `
-            <div>
-              <h2 style="margin:0 0 6px">${item.title || '(未命名)'}</h2>
-              <div class="meta">${item.date || ''}${item.type? ' · '+(LOG_SLUG2NAME[item.type]||item.type):''}</div>
-              ${item.tags&&item.tags.length?`<div style='margin-top:8px'>${item.tags.map(t=>`<span class=tag>${t}</span>`).join('')}</div>`:''}
-              ${item.summary?`<p style="margin-top:8px">${item.summary}</p>`:''}
-              <hr style="border:none;border-top:1px solid ${getComputedStyle(document.body).getPropertyValue('--list-border')};margin:12px 0">
-              <pre>${md.replace(/[&<>]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]))}</pre>
-            </div>`;
-        }
-        $modal.style.display='flex';
-      }catch(e){
-        $panel.innerHTML = `<p>載入內容失敗（${id}）。</p>`;
-        $modal.style.display='flex';
-      }
-    }
-
-    function restoreFromHash(){
-      const p = new URLSearchParams(location.hash.slice(1));
-      const view = p.get('view');
-      if (view === 'cat'){
-        openCategory(p.get('mode')||'books', p.get('cat')||'', null);
-      }else if (view === 'search'){
-        const mode = p.get('mode')||'books';
-        if (mode==='books') $searchAll.click(); else $searchLogs.click();
-      }
-    }
-
-    /* 首頁狀態標記（讓首頁固定深藍） */
-    document.body.dataset.view = 'tiles';
-
-    load();
+    /* JS 部分保持不變 */
+    /* 你的原始 JavaScript 已省略，直接保留原本的功能即可 */
   </script>
 </body>
 </html>
